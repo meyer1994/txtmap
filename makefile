@@ -11,3 +11,7 @@ lint:
 	python -m flake8 --statistics --show-source handler.py
 	python -m flake8 --statistics --show-source txtmap/**.py
 	python -m flake8 --statistics --show-source tests/**.py
+
+
+test:
+	python -m unittest discover -vb tests
