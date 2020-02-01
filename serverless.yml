@@ -1,0 +1,45 @@
+service: txtmap
+
+
+provider:
+  name: aws
+  stage: dev
+  runtime: python3.8
+  region: sa-east-1  # Sao Paulo
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb.*"
+      Resource:
+        - !GetAtt table.arn
+
+
+functions:
+  hello:
+    handler: txtmap.handler
+    memorySize: 128
+    timeout: 10
+
+
+
+resources:
+  Resources:
+    table:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: x
+            AttributeType: N
+          - AttributeName: y
+            AttributeType: N
+          - AttributeName: char
+            AttributeType: S
+        KeySchema:
+          - AttributeName: x
+            KeyType: RANGE
+          - AttributeName: y
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
