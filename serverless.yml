@@ -4,17 +4,74 @@ service: txtmap
 provider:
   name: aws
   stage: dev
-  runtime: python3.8
+  runtime: python3.7
   region: sa-east-1  # Sao Paulo
+  versionFunctions: false
+
+
+package:
+  include:
+    - '!./**'
+    - './txtmap/**'
+    - './handler.py'
+  exclude:
+    - './**'
+
 
 functions:
   hello:
-    handler: txtmap.handler
+    handler: handler.handler
     memorySize: 128
     timeout: 10
 
+    layers:
+      - arn:aws:lambda:sa-east-1:898466741470:layer:psycopg2-py37:1
+
+    events:
+      - websocket: $connect
+      - websocket: $disconnect
+      - websocket: $default
+
+    environment:
+      DB_NAME: txtmap
+      DB_HOST: !GetAtt db.Endpoint.Address
+      DB_PORT: !GetAtt db.Endpoint.Port
+      DB_USER: txtmap
+      DB_PASS: ${env:DB_PASS}
 
 
 resources:
   Resources:
+    sg:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Allows our lambdas to connect to our PostgreSQL (RDS)
+        SecurityGroupIngress:
+          - IpProtocol: -1
+            CidrIp: 0.0.0.0/0
+            FromPort: -1
+            ToPort: 5432
 
+    db:
+      Type: AWS::RDS::DBInstance
+      Properties:
+        AllocatedStorage: 5
+        DBName: txtmap
+        DBInstanceClass: db.t2.micro
+        Engine: postgres
+        MasterUsername: txtmap
+        MasterUserPassword: ${env:DB_PASS}
+        Port: 5432
+        PubliclyAccessible: true
+        StorageType: gp2
+        VPCSecurityGroups:
+          - !GetAtt sg.GroupId
+
+  Outputs:
+    DBHost:
+      Description: Database url endpoint
+      Value: !GetAtt db.Endpoint.Address
+
+
+plugins:
+  - serverless-python-requirements
