@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from txtmap.database import Database, Cursor
+from txtmap.database import TextMap, Cursor
 
 DB_USER = 'postgres'
 DB_PASS = ''
@@ -21,7 +21,7 @@ DATA = [
 ]
 
 
-class TestDatabase(TestCase):
+class TestTextMap(TestCase):
 
     def setUp(self):
         sql = r'''
@@ -39,7 +39,7 @@ class TestDatabase(TestCase):
             cursor.execute(r'TRUNCATE TABLE item')
 
     def test_get(self):
-        db = Database(URL)
+        db = TextMap(URL)
 
         # Get point already set
         point = db.get(7, 0)
@@ -50,7 +50,7 @@ class TestDatabase(TestCase):
         self.assertEqual(point.char, ' ')
 
     def test_set(self):
-        db = Database(URL)
+        db = TextMap(URL)
 
         # Set point already set
         db.set(0, 0, 'a')
@@ -63,7 +63,7 @@ class TestDatabase(TestCase):
         self.assertEqual(point.char, 'x')
 
     def test_area(self):
-        db = Database(URL)
+        db = TextMap(URL)
 
         width = len(DATA[0])
         height = len(DATA)

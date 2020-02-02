@@ -15,9 +15,9 @@ def Cursor(url):
             conn.commit()
 
 
-class Database(object):
+class TextMap(object):
     def __init__(self, url):
-        super(Database, self).__init__()
+        super(TextMap, self).__init__()
         self.url = url
 
     def get(self, x, y):
@@ -68,3 +68,15 @@ class Database(object):
 
         # Return list of items
         return [Item(x, y, c) for (x, y), c in area.items()]
+
+
+class Connections(object):
+    def __init__(self, url):
+        super(TextMap, self).__init__()
+        self.url = url
+
+    def add(self, connection):
+        pass
+
+    def remove(self, connection):
+        pass
