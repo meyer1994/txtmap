@@ -2,7 +2,9 @@
   "name": "txtmap",
   "description": "",
   "version": "0.1.0",
-  "dependencies": {},
+  "dependencies": {
+    "serverless": "^1.62.0"
+  },
   "devDependencies": {
     "serverless-python-requirements": "^5.0.1"
   }

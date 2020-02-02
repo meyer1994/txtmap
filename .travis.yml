@@ -24,4 +24,5 @@ script:
 after_success:
   - "make report"
   - "bash <(curl -s https://codecov.io/bash)"
-  - "npm i serverless && npx serverless deploy -v"
+  - "npm i"
+  - "npx serverless deploy -v"
