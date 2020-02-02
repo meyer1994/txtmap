@@ -8,7 +8,9 @@ compile:
 
 
 lint:
-	flake8 --show-source handler.py txtmap/**.py tests/**.py
+	flake8 --show-source handler.py
+	flake8 --show-source txtmap/**.py
+	flake8 --show-source tests/**.py
 
 
 venv:
@@ -21,7 +23,11 @@ install:
 
 
 test:
-	python -m unittest discover -vb tests
+	coverage run --source txtmap -m unittest discover -vb tests
+
+
+report:
+	coverage report -m
 
 
 postgres:
