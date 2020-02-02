@@ -36,13 +36,11 @@ def respond(event, data):
 def connect(event, context):
     connection = event['requestContext']['connectionId']
     logger.info('CONNECT: %s', connection)
-    return {'statusCode': 200, 'id': connection}
 
 
 def disconnect(event, context):
     connection = event['requestContext']['connectionId']
-    logger.info('CONNECT: %s', connection)
-    return {'statusCode': 200, 'id': connection}
+    logger.info('DISCONNECT: %s', connection)
 
 
 def default(event, context):
@@ -81,10 +79,10 @@ def handler(event, context):
     event_type = event['requestContext']['eventType']
 
     if event_type == 'CONNECT':
-        return connect(event, context)
+        connect(event, context)
     if event_type == 'DISCONNECT':
-        return disconnect(event, context)
+        disconnect(event, context)
     if event_type == 'MESSAGE':
-        return default(event, context)
+        default(event, context)
 
-    return {'statusCode': 500}
+    return {}
