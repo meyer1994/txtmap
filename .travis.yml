@@ -6,9 +6,12 @@ services:
 language: "python"
 python:
   - "3.7"
+node_js:
+  - "node"
 
 cache:
   pip: "true"
+  npm: "true"
 
 install:
   - "make install"
@@ -24,5 +27,14 @@ script:
 after_success:
   - "make report"
   - "bash <(curl -s https://codecov.io/bash)"
+
+before_deploy:
   - "npm i"
-  - "npx serverless deploy -v"
+  - "npm i -g serverless"
+
+deploy:
+  - provider: "script"
+    script: "serverless deploy --verbose"
+    edge: "true"
+    on:
+      branch: "dev"
