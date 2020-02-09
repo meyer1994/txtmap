@@ -1,4 +1,4 @@
-from collections import namedtuple
+from collections import namedtuple, defaultdict
 from contextlib import contextmanager
 
 import psycopg2
@@ -25,16 +25,13 @@ class TextMap(object):
         self.url = url
 
     def get(self, x, y):
-        sql = r'''
-        SELECT x, y, char FROM item WHERE Point(x, y) ~= Point(%s, %s)
-        '''
+        sql = r'SELECT x, y, char FROM item WHERE Point(x, y) ~= Point(%s, %s)'
         values = (x, y)
 
         with Cursor(self.url) as cursor:
             cursor.execute(sql, values)
             result = cursor.fetchone()
 
-        # Filter values not set
         if result is None:
             return Item(x, y, ' ')
         return Item(*result)
@@ -52,23 +49,25 @@ class TextMap(object):
         return Item(x, y, char)
 
     def area(self, x, y, width, height):
-        # Creates empty area
+        # Empty area
         area = {}
-        for i in range(x, x + width):
-            for j in range(y, y + height):
-                area[(i, j)] = ' '
+        for _x in range(x, x + width):
+            for _y in range(y, y + height):
+                area[(_x, _y)] = ' '
 
         sql = r'''
         SELECT x, y, char FROM item
-        WHERE Box(Point(%s, %s), Point(%s, %s)) @> Point(x, y)
+            WHERE Box(Point(%s, %s), Point(%s, %s)) @> Point(x, y)
         '''
         values = (x, y, x + width - 1, y + height - 1)
+
         with Cursor(self.url) as cursor:
             cursor.execute(sql, values)
+            result = cursor.fetchall()
 
-            # Fill returned values
-            for item in cursor.fetchall():
-                area[(item.x, item.y)] = item.char
+        # Fill values
+        for item in result:
+            area[(item.x, item.y)] = item.char
 
         # Return list of items
         return [Item(x, y, c) for (x, y), c in area.items()]

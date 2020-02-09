@@ -2,6 +2,7 @@ from unittest import TestCase
 
 from txtmap.database import TextMap, Cursor
 
+# Base values for docker image and travis
 DB_USER = 'postgres'
 DB_PASS = ''
 DB_HOST = 'localhost'
@@ -13,20 +14,21 @@ URL = f'postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
 
 DATA = [
     'TXTMAP_0',
-    'TXTMAP_1',
-    'TXTMAP_2',
-    'TXTMAP_3',
-    'TXTMAP_4',
-    'TXTMAP_5'
+    'TX      ',
+    'T T     ',
+    'T  M    ',
+    'T   A   ',
+    'T    P  ',
+    'T     _ ',
+    'T      7'
 ]
 
 
-class TestTextMap(TestCase):
+class TestItems(TestCase):
 
     def setUp(self):
-        sql = r'''
-        INSERT INTO item (x, y, char) VALUES (%s, %s, %s)
-        '''
+        sql = r'INSERT INTO item (x, y, char) VALUES (%s, %s, %s)'
+
         with Cursor(URL) as cursor:
             for y, line in enumerate(DATA):
                 for x, char in enumerate(line):
@@ -35,8 +37,10 @@ class TestTextMap(TestCase):
 
     def tearDown(self):
         # Delete table
+        sql = r'TRUNCATE TABLE item'
+
         with Cursor(URL) as cursor:
-            cursor.execute(r'TRUNCATE TABLE item')
+            cursor.execute(sql)
 
     def test_get(self):
         db = TextMap(URL)
@@ -47,12 +51,14 @@ class TestTextMap(TestCase):
 
         # Get point not set
         point = db.get(100, 100)
-        self.assertEqual(point.char, ' ')
+        self.assertIs(point.char, ' ')
 
     def test_set(self):
         db = TextMap(URL)
 
-        # Set point already set
+        # Update point
+        point = db.get(0, 0)
+        self.assertEqual(point.char, 'T')
         db.set(0, 0, 'a')
         point = db.get(0, 0)
         self.assertEqual(point.char, 'a')
@@ -62,24 +68,55 @@ class TestTextMap(TestCase):
         point = db.get(1000, 1000)
         self.assertEqual(point.char, 'x')
 
-    def test_area(self):
+    def test_area_column(self):
         db = TextMap(URL)
 
-        width = len(DATA[0])
-        height = len(DATA)
+        # First column
+        width = 1
+        height = 8
 
-        # Fetches all input area
         area = db.area(0, 0, width, height)
-        self.assertEqual(len(area), 48)
-        for y, line in enumerate(DATA):
-            for x, char in enumerate(line):
-                item = (x, y, char)
-                self.assertIn(item, area)
+        result = ''.join(i.char for i in area)
+        expected = 'TTTTTTTT'
+        self.assertEqual(result, expected)
 
-        # Fetches area not input
-        area = db.area(0, 0, 100, 1)
-        self.assertEqual(len(area), 100)
-        for i, c in enumerate(DATA[0]):
-            item = (i, 0, c)
-            print(item)
-            self.assertIn(item, area)
+    def test_area_row(self):
+        db = TextMap(URL)
+
+        # Last row
+        width = 8
+        height = 1
+
+        area = db.area(0, 7, width, height)
+        result = ''.join(i.char for i in area)
+        expected = 'T      7'
+        self.assertEqual(result, expected)
+
+    def test_area_set(self):
+        db = TextMap(URL)
+
+        width = 2
+        height = 2
+
+        # Fetches 2x2 area
+        area = db.area(0, 0, width, height)
+
+        result = {(x, y): c for x, y, c in area}
+        expected = {
+            (0, 0): 'T',
+            (1, 0): 'X',
+            (1, 1): 'X',
+            (0, 1): 'T'
+        }
+        self.assertDictEqual(result, expected)
+
+    def test_area_not_set(self):
+        db = TextMap(URL)
+
+        width = 100
+        height = 100
+
+        area = db.area(30, 30, width, height)
+        result = ''.join(i.char for i in area)
+        expected = ' ' * width * height
+        self.assertEqual(result, expected)
