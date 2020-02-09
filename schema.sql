@@ -7,3 +7,10 @@ CREATE TABLE item (
 
     PRIMARY KEY (x, y)
 );
+
+
+CREATE TABLE connection (
+    id VARCHAR(32),
+
+    PRIMARY KEY (id)
+);

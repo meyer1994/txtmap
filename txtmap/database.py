@@ -68,3 +68,29 @@ class TextMap(object):
 
         # Return list of items
         return [Item(x, y, c) for (x, y), c in area.items()]
+
+
+class Connections(object):
+    def __init__(self, url):
+        super(Connections, self).__init__()
+        self.url = url
+
+    def add(self, _id):
+        sql = r'''INSERT INTO connection (id) VALUES (%s)'''
+        values = (_id, )
+        with Cursor(self.url) as cursor:
+            cursor.execute(sql, values)
+        return _id
+
+    def remove(self, _id):
+        sql = r'''DELETE FROM connection WHERE id = %s'''
+        values = (_id, )
+        with Cursor(self.url) as cursor:
+            cursor.execute(sql, values)
+        return _id
+
+    def all(self):
+        sql = r'''SELECT id FROM connection'''
+        with Cursor(self.url) as cursor:
+            cursor.execute(sql)
+            return cursor.fetchall()
