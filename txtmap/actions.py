@@ -36,8 +36,6 @@ class Actions(object):
         logger.info('(%s, %s)', x, y)
 
         data = self.map.get(x, y)
-        data = {'x': data.x, 'y': data.y, 'char': data.char}
-
         _id = event['requestContext']['connectionId']
         return self.send(event, data, [_id])
 
@@ -51,8 +49,6 @@ class Actions(object):
         logger.info('(%s, %s) => %s', x, y, char)
 
         data = self.map.set(x, y, char)
-        data = {'x': data.x, 'y': data.y, 'char': data.char}
-
         ids = self.connections.all()
         return self.send(event, data, ids)
 
@@ -67,8 +63,6 @@ class Actions(object):
         logger.info('(%s, %s), (%s, %s)', x, y, width, heigth)
 
         data = self.map.area(x, y, width, heigth)
-        data = [{'x': i.x, 'y': i.y, 'char': i.char} for i in data]
-
         _id = event['requestContext']['connectionId']
         return self.send(event, data, [_id])
 
