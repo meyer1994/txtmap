@@ -58,7 +58,6 @@ class Controller {
     }
 
     onConnect (e) {
-        console.log('nice')
         const cols = this.table.cols
         const rows = this.table.rows
 
@@ -67,13 +66,13 @@ class Controller {
 
     onMessage (e) {
         let data = JSON.parse(e.data)
+        console.log(data)
 
         if (!Array.isArray(data))
             data = [data]
 
-        for (const item of data) {
-            console.log(item)
-            this.table.set(item.x, item.y, item.char)
+        for (const [x, y, char] of data) {
+            this.table.set(x, y, char)
         }
     }
 
