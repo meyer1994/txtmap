@@ -8,37 +8,11 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css" />
 
-<style type="text/css">
+    <link rel="stylesheet" href="./index.css" />
 
-* {
-    margin: 0;
-    padding: 0;
-}
-
-html, body, table {
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-}
-
-table {
-    font-family: Courier New;
-    line-height: 0;
-    letter-spacing: 0;
-    border-collapse: collapse;
-}
-
-tr {
-    max-height: 15px;
-}
-
-td {
-    max-width: 13px;
-    min-width: 13px;
-    text-align: center;
-}
-
-</style>
+    <script type="text/javascript" src="./table.js"></script>
+    <script type="text/javascript" src="./api.js"></script>
+    <script type="text/javascript" src="./controller.js"></script>
 
 </head>
 <body>
@@ -46,134 +20,9 @@ td {
 <table id="table"></table>
 
 <script>
-
-class Table {
-    constructor (cols, rows) {
-        this.cols = cols
-        this.rows = rows
-        this.coord = { x: 0, y: 0 }
-        this.table = this.createTable(this.cols, this.rows)
-
-        window.onkeydown = e => this.press(e)
-        this.select(0, 0)
-    }
-
-    get current() {
-        const { x, y } = this.coord
-        return this.get(x, y)
-    }
-
-    createTable (cols, rows) {
-        const table = document.getElementById('table')
-
-        // Add rows
-        for (let i = 0; i < rows; i++) {
-            const tr = document.createElement('tr')
-            tr.id = i
-            table.appendChild(tr)
-        }
-
-        // Add cols for each row
-        for (let tr of table.children) {
-            for (let j = 0; j < cols; j++) {
-                const td = document.createElement('td')
-                td.id = j
-                tr.appendChild(td)
-                td.addEventListener('click', e => this.click(e))
-            }
-        }
-
-        return table
-    }
-
-    press (e) {
-        let { x, y } = this.coord
-
-        switch (e.keyCode) {
-            // Backspace
-            case 8:
-                this.set(x - 1, y, ' ')
-                return this.select(x - 1, y)
-            // Enter
-            case 13:
-                return this.select(0, y + 1)
-            // CTRL, Shifht, Caps Lock
-            case 17:
-            case 16:
-            case 20:
-                return this.select(x, y)
-            // Tab
-            case 9:
-                e.preventDefault()
-                return this.select(x, y)
-            // All others
-            default:
-                this.set(x, y, e.key.charAt(0))
-                return this.select(x + 1, y)
-        }
-    }
-
-    click (e) {
-        const td = e.target
-        const tr = td.parentElement
-        const x = Number.parseInt(td.id)
-        const y = Number.parseInt(tr.id)
-        this.select(x, y)
-    }
-
-    get (x, y) {
-        const tr = this.table.children[y]
-        return tr.children[x]
-    }
-
-    set (x, y, c) {
-        this.get(x, y).innerText = c
-        return this.get(x, y)
-    }
-
-    select (x, y) {
-        this.current.setAttribute('style', 'background-color: transparent;')
-        this.coord = { x, y }
-
-        const cell = this.get(x, y)
-        cell.setAttribute('style', 'background-color: yellow;')
-        return cell
-    }
-}
-
-class API {
-    constructor () {
-        const url = 'wss://9ddqfj3crk.execute-api.sa-east-1.amazonaws.com/dev'
-        this.ws = new WebSocket(url)
-        this.ws.onopen = e => console.log('open')
-        this.ws.onmessage = e => console.log('message', e)
-        this.ws.onclose = e => console.log('close')
-    }
-
-    set (x, y, c) {
-        const data = { action: 'SET', x: x, y: y, char: c }
-        return this.ws.send(JSON.stringify(data))
-    }
-
-    get (x, y) {
-        const data = { action: 'GET', x: x, y: y }
-        return this.ws.send(JSON.stringify(data))
-    }
-}
-
-let table = null
-let api = new API()
-
-window.onload = () => {
-    const width = window.innerWidth
-    const height = window.innerHeight
-
-    const cols = width / 13
-    const rows = height / 15
-
-    table = new Table(cols, rows)
-}
-
+const controller = new Controller()
+controller.addClickListenerToTableCells()
+controller.addKeyPressListenerToWindow()
 </script>
 
 </body>
