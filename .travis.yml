@@ -5,9 +5,19 @@ services:
 
 language: "python"
 python:
+  - "3.6"
   - "3.7"
+  - "3.8"
+  - "3.8-dev"
+  - "nightly"
 node_js:
   - "node"
+
+
+jobs:
+  allow_failures:
+    - python: "3.8-dev"
+    - python: "nightly"
 
 cache:
   pip: "true"
@@ -38,3 +48,4 @@ deploy:
     edge: "true"
     on:
       branch: "dev"
+      python: "3.7"
