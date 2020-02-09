@@ -1,4 +1,4 @@
-from collections import namedtuple, defaultdict
+from collections import namedtuple
 from contextlib import contextmanager
 
 import psycopg2
