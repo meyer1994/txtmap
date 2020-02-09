@@ -93,4 +93,5 @@ class Connections(object):
         sql = r'''SELECT id FROM connection'''
         with Cursor(self.url) as cursor:
             cursor.execute(sql)
-            return cursor.fetchall()
+            results = cursor.fetchall()
+        return [r.id for r in results]
