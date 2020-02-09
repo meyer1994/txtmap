@@ -9,10 +9,14 @@ Item = namedtuple('Item', ['x', 'y', 'char'])
 
 @contextmanager
 def Cursor(url):
-    with psycopg2.connect(url) as conn:
-        with conn.cursor(cursor_factory=NamedTupleCursor) as cursor:
-            yield cursor
-            conn.commit()
+    try:
+        conn = psycopg2.connect(url)
+        with conn:
+            with conn.cursor(cursor_factory=NamedTupleCursor) as cursor:
+                yield cursor
+                conn.commit()
+    finally:
+        conn.close()
 
 
 class TextMap(object):
