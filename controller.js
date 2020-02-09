@@ -66,7 +66,6 @@ class Controller {
 
     onMessage (e) {
         let data = JSON.parse(e.data)
-        console.log(data)
 
         if (!Array.isArray(data))
             data = [data]
@@ -77,7 +76,8 @@ class Controller {
     }
 
     set (x, y, c) {
-        this.api.set(x, y, c)
+        if (c !== ' ')
+            this.api.set(x, y, c)
         this.table.set(x, y, c)
     }
 }
