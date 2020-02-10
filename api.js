@@ -11,22 +11,27 @@ Object.freeze(Actions)
 
 class API extends WebSocket {
     constructor () {
+        console.debug('Connecting')
         super(URL)
     }
 
     set (x, y, char) {
+        char = char.charAt(0)
+        console.debug(`SET: (${x}, ${y}) = '${char}'`)
         let data = { action: Actions.SET, x, y, char }
         data = JSON.stringify(data)
         return this.send(data)
     }
 
     get (x, y) {
+        console.debug(`GET: (${x}, ${y})`)
         let data = { action: Actions.GET, x, y }
         data = JSON.stringify(data)
         return this.send(data)
     }
 
     area (x, y, width, heigth) {
+        console.debug(`AREA: (${x}, ${y}, ${width}, ${heigth})`)
         let data = { action: Actions.AREA, x, y, width, heigth }
         data = JSON.stringify(data)
         return this.send(data)

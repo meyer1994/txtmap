@@ -6,6 +6,8 @@ class Table {
         this.coord = { x: 0, y: 0 }
         this.table = element
 
+        console.debug(`Table: ${this.cols} cols, ${this.rows} rows`)
+
         // Rows
         for (let i = 0; i < rows; i++) {
             const tr = document.createElement('tr')
@@ -19,18 +21,12 @@ class Table {
                 tr.appendChild(td)
             }
         }
-
-        this.select(0, 0)
-    }
-
-    current() {
-        const { x, y } = this.coord
-        return this.get(x, y)
     }
 
     get (x, y) {
         const tr = this.table.children[y]
-        return tr.children[x]
+        const td = tr.children[x]
+        return td
     }
 
     set (x, y, c) {
@@ -39,7 +35,9 @@ class Table {
     }
 
     select (x, y) {
-        const current = this.current()
+        console.debug(`Select: (${x}, ${y})`)
+
+        const current = this.get(this.coord.x, this.coord.y)
         current.classList.remove('selected')
 
         this.coord = { x: Number.parseInt(x), y: Number.parseInt(y) }
