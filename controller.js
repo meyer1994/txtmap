@@ -72,18 +72,22 @@ class Controller {
             // Caps Lock
             case 20:
                 return
-            // Up
-            case 38:
-                return this.table.select(x, y - 1)
-            // Down
-            case 40:
-                return this.table.select(x, y + 1)
-            // Right
-            case 39:
-                return this.table.select(x + 1, y)
             // Left
             case 37:
                 return this.table.select(x - 1, y)
+            // Up
+            case 38:
+                return this.table.select(x, y - 1)
+            // Right
+            case 39:
+                return this.table.select(x + 1, y)
+            // Down
+            case 40:
+                return this.table.select(x, y + 1)
+            // Delete
+            case 46:
+                this.set(x + 1, y, ' ')
+                return this.table.select(x + 1, y)
         }
     }
 
