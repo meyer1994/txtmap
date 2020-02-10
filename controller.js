@@ -19,6 +19,7 @@ class Controller {
         // Set viewport events
         this.table.table.onclick = e => this.onClick(e)
         window.onkeydown = e => this.onKeyDown(e)
+        window.onkeypress = e => this.onKeyPress(e)
         window.onwheel = e => this.onWheel(e)
     }
 
