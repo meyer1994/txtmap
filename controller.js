@@ -42,6 +42,12 @@ class Controller {
         this.table.select(x, y)
     }
 
+    onKeyPress (e) {
+        const { x, y } = this.table.coord
+        this.set(x, y, e.key)
+        return this.table.select(x + 1, y)
+    }
+
     onKeyDown (e) {
         const { x, y } = this.table.coord
 
@@ -65,9 +71,18 @@ class Controller {
             // Caps Lock
             case 20:
                 return
-            default:
-                this.set(x, y, e.key)
+            // Up
+            case 38:
+                return this.table.select(x, y - 1)
+            // Down
+            case 40:
+                return this.table.select(x, y + 1)
+            // Right
+            case 39:
                 return this.table.select(x + 1, y)
+            // Left
+            case 37:
+                return this.table.select(x - 1, y)
         }
     }
 
