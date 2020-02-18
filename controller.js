@@ -114,7 +114,6 @@ class Controller {
     onMessage (e) {
         console.debug(`Message: ${e.data.length} bytes`)
         let data = JSON.parse(e.data)
-        console.log(data)
 
         const aX = this.anchor.x
         const aY = this.anchor.y
