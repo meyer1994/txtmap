@@ -10,6 +10,7 @@ class Controller {
         this.api = new API()
 
         this.anchor = { x: 0, y: 0 }
+        this.shift = false
 
         // Set WS events
         this.api.onopen = e => this.onConnect(e)
@@ -19,17 +20,20 @@ class Controller {
         // Set viewport events
         this.table.table.onclick = e => this.onClick(e)
         window.onkeydown = e => this.onKeyDown(e)
+        window.onkeyup = e => this.onKeyUp(e)
         window.onkeypress = e => this.onKeyPress(e)
         window.onwheel = e => this.onWheel(e)
     }
 
     onWheel (e) {
-        const horizontal = Math.sign(e.deltaX) * 10
-        const vertical = Math.sign(e.deltaY) * 10
+        const movement = Math.sign(e.deltaY) * 10
 
-        const { x, y } = this.move(horizontal, vertical)
-        console.log('Wheel:', x, y)
-        this.api.area(x, y, horizontal, vertical)
+        // Horizontal
+        if (this.shift)
+            return this.move(movement, 0)
+        // Vertical
+        else
+            return this.move(0, movement)
     }
 
     onClick (e) {
@@ -64,6 +68,7 @@ class Controller {
                 return this.table.select(x, y + 1)
             // Shift
             case 16:
+                this.shift = !this.shift
                 return
             // CTRL
             case 17:
@@ -87,6 +92,15 @@ class Controller {
             case 46:
                 this.set(x + 1, y, ' ')
                 return this.table.select(x + 1, y)
+        }
+    }
+
+    onKeyUp (e) {
+        switch (e.keyCode) {
+            // Shift
+            case 16:
+                this.shift = !this.shift
+                return
         }
     }
 
@@ -132,11 +146,16 @@ class Controller {
     }
 
     _move_right (moveX) {
-        // TODO
+        const { x, y } = this.anchor
+        const rows = this.table.rows
+        this.api.area(x, y, moveX, rows)
     }
 
     _move_left (moveX) {
-        // TODO
+        const { x, y } = this.anchor
+        const { cols, rows } = this.table
+        console.log(x, y, moveX, rows)
+        this.api.area(x - moveX + cols, y, moveX, rows)
     }
 
     _move_up (moveY) {
