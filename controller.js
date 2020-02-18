@@ -131,6 +131,14 @@ class Controller {
         return this.anchor
     }
 
+    _move_right (moveX) {
+        // TODO
+    }
+
+    _move_left (moveX) {
+        // TODO
+    }
+
     _move_up (moveY) {
         const { x, y } = this.anchor
         const cols = this.table.cols
