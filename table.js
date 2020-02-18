@@ -102,12 +102,20 @@ class Table {
     }
 
     select (x, y) {
+        x = Number.parseInt(x)
+        y = Number.parseInt(y)
         console.debug(`Select: (${x}, ${y})`)
 
         const current = this.get(this.coord.x, this.coord.y)
         current.classList.remove('selected')
 
-        this.coord = { x: Number.parseInt(x), y: Number.parseInt(y) }
+        x = Math.max(x, 0)
+        x = Math.min(x, this.cols - 1)
+
+        y = Math.max(y, 0)
+        y = Math.min(y, this.rows - 1)
+
+        this.coord = { x, y }
 
         const cell = this.get(x, y)
         cell.classList.add('selected')
