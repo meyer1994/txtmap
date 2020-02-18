@@ -28,9 +28,9 @@ class Table {
 
     move (x, y) {
         if (x < 0)
-            this._move_right(-x)
+            this._move_right(x)
         if (x > 0)
-            this._move_left(x)
+            this._move_left(-x)
         if (y < 0)
             this._move_up(-y)
         if (y > 0)

@@ -27,10 +27,9 @@ class Controller {
         const horizontal = Math.sign(e.deltaX) * 10
         const vertical = Math.sign(e.deltaY) * 10
 
-        this.move(horizontal, vertical)
-
-        const { x, y } = this.anchor
-        this.api.area(x, y, this.table.cols, this.table.rows)
+        const { x, y } = this.move(horizontal, vertical)
+        console.log('Wheel:', x, y)
+        this.api.area(x, y, horizontal, vertical)
     }
 
     onClick (e) {
@@ -101,6 +100,7 @@ class Controller {
     onMessage (e) {
         console.debug(`Message: ${e.data.length} bytes`)
         let data = JSON.parse(e.data)
+        console.log(data)
 
         const aX = this.anchor.x
         const aY = this.anchor.y
@@ -114,8 +114,33 @@ class Controller {
     }
 
     move (x, y) {
+        this.table.move(x, y)
+
         this.anchor.x += x
         this.anchor.y += y
+
+        if (x < 0)
+            this._move_right(-x)
+        if (x > 0)
+            this._move_left(x)
+        if (y < 0)
+            this._move_up(-y)
+        if (y > 0)
+            this._move_down(y)
+
+        return this.anchor
+    }
+
+    _move_up (moveY) {
+        const { x, y } = this.anchor
+        const cols = this.table.cols
+        this.api.area(x, y, cols, moveY)
+    }
+
+    _move_down (moveY) {
+        const { x, y } = this.anchor
+        const { cols, rows } = this.table
+        this.api.area(x, y - moveY + rows, cols, moveY)
     }
 
     set (x, y, c) {
