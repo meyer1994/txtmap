@@ -35,6 +35,15 @@ class Table {
             this._move_up(-y)
         if (y > 0)
             this._move_down(y)
+
+        for (let i = 0; i < this.rows; i++) {
+            const tr = this.table.children[i]
+            tr.id = i
+            for (let j = 0; j < this.cols; j++) {
+                const td = tr.children[j]
+                td.id = j
+            }
+        }
     }
 
     _move_right (x) {
