@@ -32,8 +32,36 @@ class API extends WebSocket {
 
     area (x, y, width, heigth) {
         console.debug(`AREA: (${x}, ${y}, ${width}, ${heigth})`)
-        let data = { action: Actions.AREA, x, y, width, heigth }
+
+        const div = 10
+
+        const divW = Math.floor(width / div)
+        const modW = width % div
+
+        for (let i = 0; i < div; i++) {
+            let data = {
+                action: Actions.AREA,
+                x: x + i * divW,
+                y,
+                width: divW,
+                heigth
+            }
+            data = JSON.stringify(data)
+            this.send(data)
+        }
+
+        let data = {
+            action: Actions.AREA,
+            x: x + div * divW,
+            y,
+            width: modW,
+            heigth
+        }
         data = JSON.stringify(data)
-        return this.send(data)
+        this.send(data)
+
+        // let data = { action: Actions.AREA, x, y, width, heigth }
+        // data = JSON.stringify(data)
+        // return this.send(data)
     }
 }

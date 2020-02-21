@@ -1,32 +1,30 @@
 
 
 class Controller {
-    constructor () {
-        const cols = Math.floor(window.innerWidth / 13)
-        const rows = Math.floor(window.innerHeight / 15)
-
-        const el = document.getElementById('table')
-        this.table = new Table(cols, rows, el)
-        this.api = new API()
+    constructor (api, table) {
+        this.table = table
+        this.api = api
 
         // State control variables
         this.anchor = { x: 0, y: 0 }
         this.shift = false
         this.start = { x: 0, y: 0 }
 
-        // Set WS events
+        // Set websocket events
         this.api.onopen = e => this.onConnect(e)
         this.api.onmessage = e => this.onMessage(e)
         this.api.onclose = e => this.onClose(e)
 
-        // Set viewport events
+        // Set mouse events
         this.table.table.onclick = e => this.onClick(e)
         this.table.table.onmousedown = e => this.onMouseDown(e)
         this.table.table.onmouseup = e => this.onMouseUp(e)
+        window.onwheel = e => this.onWheel(e)
+
+        // Set keyboard events
         window.onkeydown = e => this.onKeyDown(e)
         window.onkeyup = e => this.onKeyUp(e)
         window.onkeypress = e => this.onKeyPress(e)
-        window.onwheel = e => this.onWheel(e)
     }
 
     onMouseDown (e) {
