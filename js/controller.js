@@ -76,6 +76,9 @@ class Controller {
     }
 
     onKeyPress (e) {
+        // Ignore enter
+        if (e.keyCode == 13)
+            return
         const { x, y } = this.table.coord
         this.set(x, y, e.key)
         return this.table.select(x + 1, y)
