@@ -27,6 +27,8 @@ class Table {
     }
 
     move (x, y) {
+        this.get(this.coord.x, this.coord.y).classList.remove('selected')
+
         if (x < 0)
             this._move_right(-x)
         if (x > 0)

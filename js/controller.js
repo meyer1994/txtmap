@@ -1,13 +1,4 @@
 
-class ArrowsController {
-    constructor (table, api) {
-        this.table = this.table
-        this.api = this.api
-    }
-}
-
-
-
 
 class Controller {
     constructor () {
@@ -18,8 +9,10 @@ class Controller {
         this.table = new Table(cols, rows, el)
         this.api = new API()
 
+        // State control variables
         this.anchor = { x: 0, y: 0 }
         this.shift = false
+        this.start = { x: 0, y: 0 }
 
         // Set WS events
         this.api.onopen = e => this.onConnect(e)
@@ -28,10 +21,29 @@ class Controller {
 
         // Set viewport events
         this.table.table.onclick = e => this.onClick(e)
+        this.table.table.onmousedown = e => this.onMouseDown(e)
+        this.table.table.onmouseup = e => this.onMouseUp(e)
         window.onkeydown = e => this.onKeyDown(e)
         window.onkeyup = e => this.onKeyUp(e)
         window.onkeypress = e => this.onKeyPress(e)
         window.onwheel = e => this.onWheel(e)
+    }
+
+    onMouseDown (e) {
+        // Ignore other buttons
+        if (e.buttons != 1)
+            return
+
+        this.start = { x: e.clientX, y: e.clientY }
+    }
+
+    onMouseUp (e) {
+        const { x, y } = this.start
+
+        const moveX = Math.floor((e.clientX - x) / 13)
+        const moveY = Math.floor((e.clientY - y) / 15)
+
+        this.move(-moveX, -moveY)
     }
 
     onWheel (e) {
@@ -46,6 +58,9 @@ class Controller {
     }
 
     onClick (e) {
+        if (e.target.id == 'table')
+            return
+
         const td = e.target
         const tr = td.parentElement
 
