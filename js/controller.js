@@ -21,6 +21,13 @@ class Controller {
         this.table.table.onmouseup = e => this.onMouseUp(e)
         window.onwheel = e => this.onWheel(e)
 
+        // Set touch events
+        this.table.table.ontouchend = e => this.onMouseUp(e)
+        this.table.table.ontouchstart = e => {
+            this.onClick(e)
+            this.onMouseDown(e)
+        }
+
         // Set keyboard events
         window.onkeydown = e => this.onKeyDown(e)
         window.onkeyup = e => this.onKeyUp(e)
