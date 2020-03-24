@@ -21,7 +21,8 @@ package:
 
 
 functions:
-  hello:
+  function:
+    description: Lambda that handles all WebSocket connections
     handler: handler.handler
     memorySize: 128
     timeout: 5
