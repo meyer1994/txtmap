@@ -5,6 +5,7 @@ from txtmap.database import TextMap
 
 class TestItems(ItemTest):
     def test_get(self):
+        """ Gets single item from DB """
         db = TextMap(self.url)
 
         # Get point already set
@@ -16,6 +17,7 @@ class TestItems(ItemTest):
         self.assertIs(point.char, ' ')
 
     def test_set(self):
+        """ Sets single item into DB """
         db = TextMap(self.url)
 
         # Update point
@@ -31,6 +33,7 @@ class TestItems(ItemTest):
         self.assertEqual(point.char, 'x')
 
     def test_area_column(self):
+        """ Gets area (column) """
         db = TextMap(self.url)
 
         # First column
@@ -43,6 +46,7 @@ class TestItems(ItemTest):
         self.assertEqual(result, expected)
 
     def test_area_row(self):
+        """ Gets area (row) """
         db = TextMap(self.url)
 
         # Last row
@@ -55,6 +59,7 @@ class TestItems(ItemTest):
         self.assertEqual(result, expected)
 
     def test_area_set(self):
+        """ Gets area with values """
         db = TextMap(self.url)
 
         width = 2
@@ -73,6 +78,7 @@ class TestItems(ItemTest):
         self.assertDictEqual(result, expected)
 
     def test_area_not_set(self):
+        """ Gets area without values """
         db = TextMap(self.url)
 
         width = 100

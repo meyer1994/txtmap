@@ -5,6 +5,7 @@ from tests.base import ConnectionTest
 
 class TestConnections(ConnectionTest):
     def test_add(self):
+        """ Adds a connection to DB """
         conn = Connections(self.url)
         _id = 'some_id'
 
@@ -19,6 +20,7 @@ class TestConnections(ConnectionTest):
         self.assertEqual(result.count, 1)
 
     def test_remove(self):
+        """ Removes a connection from DB """
         conn = Connections(self.url)
         result = conn.remove('id_0')
         self.assertEqual(result, 'id_0')
@@ -31,6 +33,7 @@ class TestConnections(ConnectionTest):
         self.assertEqual(result.count, 7)
 
     def test_all(self):
+        """ Gets all connections from DB """
         conn = Connections(self.url)
         result = conn.all()
         self.assertListEqual(result, self.DATA)
