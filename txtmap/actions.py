@@ -3,29 +3,22 @@ import logging
 
 import boto3
 
+from .router import Router
 from .database import Connections, TextMap
 
 logger = logging.getLogger('Actions')
 logger.setLevel(logging.INFO)
 
 
-class Actions(object):
+class Actions(Router):
     def __init__(self, url):
         super(Actions, self).__init__()
         self.map = TextMap(url)
         self.connections = Connections(url)
 
-    def __call__(self, event, context):
-        action = event['body']['action']
-        logger.info('Action:')
-        logger.info(action)
-
-        if action == 'GET':
-            return self.get(event)
-        if action == 'SET':
-            return self.set(event)
-        if action == 'AREA':
-            return self.area(event)
+    @staticmethod
+    def key(event):
+        return event['body']['action'].lower()
 
     def get(self, event):
         body = event['body']
