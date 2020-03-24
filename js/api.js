@@ -1,5 +1,5 @@
 
-const URL = 'wss://9ddqfj3crk.execute-api.sa-east-1.amazonaws.com/dev'
+const URL = 'wss://ih7crdrg6b.execute-api.sa-east-1.amazonaws.com/dev'
 
 const Actions = {
     GET: 'GET',
