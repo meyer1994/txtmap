@@ -25,10 +25,10 @@ class Actions(Router):
         x, y = body['x'], body['y']
         x, y = int(x), int(y)
 
-        logger.info('Get:')
-        logger.info('(%s, %s)', x, y)
-
+        logger.info('Get: (%s, %s)', x, y)
         data = self.map.get(x, y)
+        logger.info('Got: %s', data)
+
         _id = event['requestContext']['connectionId']
         return self._send(event, [data], [_id])
 
@@ -36,12 +36,12 @@ class Actions(Router):
         body = event['body']
         x, y = body['x'], body['y']
         x, y = int(x), int(y)
-        char = body['char']
+        char = body['char'][0]
 
-        logger.info('Set:')
-        logger.info('(%s, %s) => %s', x, y, char)
-
+        logger.info('Set: (%s, %s) => %s', x, y, char)
         data = self.map.set(x, y, char)
+        logger.info('Set: %s', data)
+
         ids = self.connections.all()
         return self._send(event, [data], ids)
 
@@ -52,10 +52,10 @@ class Actions(Router):
         width, heigth = body['width'], body['heigth']
         width, heigth = int(width), int(heigth)
 
-        logger.info('Area:')
-        logger.info('(%s, %s), (%s, %s)', x, y, width, heigth)
-
+        logger.info('Area: (%s, %s), (%s, %s)', x, y, width, heigth)
         data = self.map.area(x, y, width, heigth)
+        logger.info('Total area: %d', len(data))
+
         _id = event['requestContext']['connectionId']
         return self._send(event, data, [_id])
 
