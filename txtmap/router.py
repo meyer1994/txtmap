@@ -2,7 +2,7 @@ import inspect
 import logging
 from abc import ABC, abstractmethod
 
-logger = logging.getLogger()
+logger = logging.getLogger('Router')
 logger.setLevel(logging.INFO)
 
 
