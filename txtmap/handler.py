@@ -21,30 +21,23 @@ class Handler(Router):
 
     def connect(self, event, context):
         _id = event['requestContext']['connectionId']
-        logger.info('Connecting:')
-        logger.info(_id)
-
+        logger.info('Connecting: %s', _id)
         self.connections.add(_id)
-        logger.info('Connected')
+        logger.info('Connected: %s', _id)
         return {}
 
     def disconnect(self, event, context):
         _id = event['requestContext']['connectionId']
-        logger.info('Disconnecting:')
-        logger.info(_id)
-
+        logger.info('Disconnecting: %s', _id)
         self.connections.remove(_id)
-        logger.info('Disconnected')
+        logger.info('Disconnected: %s', _id)
         return {}
 
     def message(self, event, context):
         _id = event['requestContext']['connectionId']
-        logger.info('Default:')
-        logger.info(_id)
-
+        logger.info('Start: %s', _id)
         body = event['body']
         event['body'] = json.loads(body)
-
-        self.actions(event, context)
-        logger.info('Default end')
+        self.actions(event)
+        logger.info('End: %s', _id)
         return {}
