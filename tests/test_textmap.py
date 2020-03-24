@@ -1,49 +1,11 @@
-from unittest import TestCase
+from tests.base import ItemTest
 
-from txtmap.database import TextMap, Cursor
-
-# Base values for docker image and travis
-DB_USER = 'postgres'
-DB_PASS = ''
-DB_HOST = 'localhost'
-DB_PORT = '5432'
-DB_NAME = 'postgres'
-
-URL = f'postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+from txtmap.database import TextMap
 
 
-DATA = [
-    'TXTMAP_0',
-    'TX      ',
-    'T T     ',
-    'T  M    ',
-    'T   A   ',
-    'T    P  ',
-    'T     _ ',
-    'T      7'
-]
-
-
-class TestItems(TestCase):
-
-    def setUp(self):
-        sql = r'INSERT INTO item (x, y, char) VALUES (%s, %s, %s)'
-
-        with Cursor(URL) as cursor:
-            for y, line in enumerate(DATA):
-                for x, char in enumerate(line):
-                    values = (x, y, char)
-                    cursor.execute(sql, values)
-
-    def tearDown(self):
-        # Delete table
-        sql = r'TRUNCATE TABLE item'
-
-        with Cursor(URL) as cursor:
-            cursor.execute(sql)
-
+class TestItems(ItemTest):
     def test_get(self):
-        db = TextMap(URL)
+        db = TextMap(self.url)
 
         # Get point already set
         point = db.get(7, 0)
@@ -54,7 +16,7 @@ class TestItems(TestCase):
         self.assertIs(point.char, ' ')
 
     def test_set(self):
-        db = TextMap(URL)
+        db = TextMap(self.url)
 
         # Update point
         point = db.get(0, 0)
@@ -69,7 +31,7 @@ class TestItems(TestCase):
         self.assertEqual(point.char, 'x')
 
     def test_area_column(self):
-        db = TextMap(URL)
+        db = TextMap(self.url)
 
         # First column
         width = 1
@@ -81,7 +43,7 @@ class TestItems(TestCase):
         self.assertEqual(result, expected)
 
     def test_area_row(self):
-        db = TextMap(URL)
+        db = TextMap(self.url)
 
         # Last row
         width = 8
@@ -93,7 +55,7 @@ class TestItems(TestCase):
         self.assertEqual(result, expected)
 
     def test_area_set(self):
-        db = TextMap(URL)
+        db = TextMap(self.url)
 
         width = 2
         height = 2
@@ -111,7 +73,7 @@ class TestItems(TestCase):
         self.assertDictEqual(result, expected)
 
     def test_area_not_set(self):
-        db = TextMap(URL)
+        db = TextMap(self.url)
 
         width = 100
         height = 100
