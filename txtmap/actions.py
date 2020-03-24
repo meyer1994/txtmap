@@ -30,7 +30,7 @@ class Actions(Router):
 
         data = self.map.get(x, y)
         _id = event['requestContext']['connectionId']
-        return self.send(event, [data], [_id])
+        return self._send(event, [data], [_id])
 
     def set(self, event):
         body = event['body']
@@ -43,7 +43,7 @@ class Actions(Router):
 
         data = self.map.set(x, y, char)
         ids = self.connections.all()
-        return self.send(event, [data], ids)
+        return self._send(event, [data], ids)
 
     def area(self, event):
         body = event['body']
@@ -57,9 +57,9 @@ class Actions(Router):
 
         data = self.map.area(x, y, width, heigth)
         _id = event['requestContext']['connectionId']
-        return self.send(event, data, [_id])
+        return self._send(event, data, [_id])
 
-    def send(self, event, data, ids):
+    def _send(self, event, data, ids):
         # Build URL
         domain = event['requestContext']['domainName']
         stage = event['requestContext']['stage']
