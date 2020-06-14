@@ -1,4 +1,0 @@
-flake8
-coverage
-psycopg2
-boto3
