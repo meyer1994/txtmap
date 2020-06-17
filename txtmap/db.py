@@ -4,7 +4,7 @@ import sqlalchemy
 
 from txtmap.config import config
 
-database = databases.Database(config.DATABASE_URL)
+database = databases.Database(config.DATABASE_URL, min_size=5, max_size=15)
 metdata = sqlalchemy.MetaData()
 
 
@@ -18,8 +18,5 @@ class Coordinate(orm.Model):
     c = orm.String(min_length=1, max_length=1, trim_whitespace=False)
 
 
-engine = sqlalchemy.create_engine(
-    config.DATABASE_URL,
-    pool_size=20,
-    max_overflow=0)
+engine = sqlalchemy.create_engine(config.DATABASE_URL)
 metdata.create_all(engine)
