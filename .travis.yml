@@ -17,3 +17,8 @@ install:
 
 script:
   - python -m unittest discover -vb tests/ || echo 'No tests :('
+
+deploy:
+  provider: heroku
+  edge: true
+  on: master
