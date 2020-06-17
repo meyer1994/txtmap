@@ -20,5 +20,6 @@ script:
 
 deploy:
   provider: heroku
+  strategy: api
   edge: true
   on: master
