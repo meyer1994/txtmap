@@ -18,5 +18,8 @@ class Coordinate(orm.Model):
     c = orm.String(min_length=1, max_length=1, trim_whitespace=False)
 
 
-engine = sqlalchemy.create_engine(config.DATABASE_URL)
+engine = sqlalchemy.create_engine(
+    config.DATABASE_URL,
+    pool_size=20,
+    max_overflow=0)
 metdata.create_all(engine)
