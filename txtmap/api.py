@@ -35,9 +35,10 @@ async def shutdown():
 @app.websocket('/')
 async def websocket(ws: WebSocket):
     await ws.accept()
-    async with broadcast.subscribe(channel='map') as subscriber:
-        async for event in subscriber:
-            await ws.send_text(event.message)
+    while True:
+        async with broadcast.subscribe(channel='map') as subscriber:
+            async for event in subscriber:
+                await ws.send_text(event.message)
 
 
 @app.post('/')
