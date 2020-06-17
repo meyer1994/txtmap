@@ -1,1 +1,1 @@
-web: uvicorn txtmap.app
+web: uvicorn txtmap:app
