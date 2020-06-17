@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from broadcaster import Broadcast
 from starlette.websockets import WebSocket
 from asyncpg.exceptions import UniqueViolationError
+from starlette.middleware.cors import CORSMiddleware
 
 from txtmap.config import config
 from txtmap.models import PostModel
@@ -10,6 +11,13 @@ from txtmap.db import database, Coordinate
 
 broadcast = Broadcast(config.DATABASE_URL)
 app = FastAPI()
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_methods=['*'],
+    allow_origins=['*'],
+)
 
 
 @app.on_event('startup')
