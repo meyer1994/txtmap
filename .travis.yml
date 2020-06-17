@@ -14,7 +14,7 @@ cache:
   pip: true
 
 install:
-  - pip install requirements.txt
+  - pip install -r requirements.txt
 
 script:
   - python -m unittest discover -vb test || echo 'No tests :('
