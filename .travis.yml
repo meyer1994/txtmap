@@ -1,51 +1,20 @@
-os: "linux"
+os: linux
+dist: bionic
 
 services:
-  - "postgresql"
+  - postgresql
 
-language: "python"
+language: python
 python:
   - "3.6"
   - "3.7"
   - "3.8"
-  - "3.8-dev"
-  - "nightly"
-node_js:
-  - "node"
-
-
-jobs:
-  allow_failures:
-    - python: "3.8-dev"
-    - python: "nightly"
 
 cache:
-  pip: "true"
-  npm: "true"
+  pip: true
 
 install:
-  - "make install"
-
-before_script:
-  - "psql -U postgres -f ./schema.sql"
+  - pip install requirements.txt
 
 script:
-  - "make compile"
-  - "make lint"
-  - "make test"
-
-after_success:
-  - "make report"
-  - "bash <(curl -s https://codecov.io/bash)"
-
-before_deploy:
-  - "npm i"
-  - "npm i -g serverless"
-
-deploy:
-  - provider: "script"
-    script: "serverless deploy --verbose"
-    edge: "true"
-    on:
-      branch: "dev"
-      python: "3.7"
+  - python -m unittest discover -vb test || echo 'No tests :('
