@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from broadcaster import Broadcast
 from starlette.websockets import WebSocket
+from asyncpg.exceptions import UniqueViolationError
 
 from txtmap.config import config
 from txtmap.models import PostModel
@@ -33,7 +34,10 @@ async def websocket(ws: WebSocket):
 
 @app.post('/')
 async def post(data: PostModel):
-    await Coordinate.objects.create(**data.dict())
+    try:
+        await Coordinate.objects.create(**data.dict())
+    except UniqueViolationError:
+        pass
     await broadcast.publish(channel='map', message=data.json())
     return data
 
