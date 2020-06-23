@@ -6,20 +6,21 @@ services:
 
 language: python
 python:
-  - "3.7"
-  - "3.8"
+  - '3.7'
+  - '3.8'
 
 cache:
   pip: true
 
 install:
+  - pip install -r requirements-dev.txt
   - pip install -r requirements.txt
 
 script:
-  - python -m unittest discover -vb tests/ || echo 'No tests :('
+  - python -m compileall txtmap/ tests/
+  - python -m flake8 --statistics txtmap/ tests/
+  - python -m coverage run --source txtmap -m unittest discover -vb tests/
 
-deploy:
-  provider: heroku
-  strategy: api
-  edge: true
-  on: master
+after_success:
+  - python -m coverage report -m
+  - bash <(curl -s https://codecov.io/bash)
