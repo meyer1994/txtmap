@@ -9,7 +9,9 @@ router = APIRouter()
 
 @router.websocket('/ws')
 async def ws(ws: WebSocket):
-    return await services.subscribe(ws)
+    await ws.connect()
+    while True:
+        await services.subscribe(ws)
 
 
 @router.post('/area')
