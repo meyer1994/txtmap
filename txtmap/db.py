@@ -16,7 +16,3 @@ class Coordinate(orm.Model):
     x = orm.Integer(primary_key=True)
     y = orm.Integer(primary_key=True)
     c = orm.String(min_length=1, max_length=1, trim_whitespace=False)
-
-
-engine = sqlalchemy.create_engine(config.DATABASE_URL)
-metdata.create_all(engine)
