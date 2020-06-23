@@ -26,15 +26,18 @@ class TestService(IsolatedAsyncioTestCase):
         for item in values:
             self.assertIn(item, result)
 
+    @patch('txtmap.services.broadcast', new_callable=AsyncMock)
     @patch('txtmap.services.Coordinate', new_callable=AsyncMock)
-    async def test_coord(self, Coordinate=None):
-        """ Returns a single coordinate from db """
+    async def test_coord(self, Coordinate, broadcast):
+        """ Returns a single coordinate from db and broadcasts it """
         Coordinate.objects.create.return_value = {'x': 1, 'y': 0, 'c': 'x'}
 
         coord = PostCoord(x=1, y=0, c='x')
         result = await services.coord(coord)
 
-        Coordinate.objects.create.assert_called_once_with(x=1, y=0, c='x')
+        Coordinate.objects.create.assert_awaited_once_with(**coord.dict())
+        broadcast.publish\
+            .assert_awaited_once_with(channel='map', message=coord.json())
         expected = {'x': 1, 'y': 0, 'c': 'x'}
         self.assertEquals(result, expected)
 
@@ -55,6 +58,3 @@ class TestService(IsolatedAsyncioTestCase):
         broadcast.subscribe.assert_called_once_with(channel='map')
         subscriber.__aiter__.assert_called_once()
         ws.send_text.assert_called_once_with('message')
-
-    async def test_publish(self, broadcast):
-        pass

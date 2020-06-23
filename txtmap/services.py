@@ -24,6 +24,7 @@ async def area(box: PostArea) -> List[dict]:
 
 async def coord(coord: PostCoord) -> dict:
     await Coordinate.objects.create(**coord.dict())
+    await broadcast.publish(channel='map', message=coord.json())
     return coord.dict()
 
 
@@ -31,7 +32,3 @@ async def subscribe(ws: WebSocket):
     async with broadcast.subscribe(channel='map') as subscriber:
         async for event in subscriber:
             await ws.send_text(event.message)
-
-
-async def publish(data: dict):
-    pass
