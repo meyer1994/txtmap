@@ -1,5 +1,5 @@
-from unittest.mock import patch, AsyncMock
 from unittest import IsolatedAsyncioTestCase
+from unittest.mock import patch, AsyncMock, MagicMock
 
 from txtmap import controller
 from txtmap.models import PostArea, PostCoord
@@ -31,4 +31,6 @@ class TestController(IsolatedAsyncioTestCase):
 
     @patch('txtmap.controller.services', new_callable=AsyncMock)
     async def test_ws(self, services):
-        pass
+        ws = MagicMock()
+        await controller.ws(ws)
+        services.subscribe.assert_awaited_once_with(ws)
