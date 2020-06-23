@@ -19,7 +19,7 @@ install:
 script:
   - python -m compileall txtmap/ tests/
   - python -m flake8 --statistics txtmap/ tests/
-  - python -m coverage run --source txtmap -m unittest discover -vb tests/
+  - python -m coverage run --source txtmap -m unittest discover -vb tests/unit/
 
 after_success:
   - python -m coverage report -m
