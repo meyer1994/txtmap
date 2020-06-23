@@ -1,11 +1,12 @@
 from typing import Tuple, List
 
-from txtmap.db import database
+from txtmap.db import database, Coordinate
+from txtmap.models import PostArea, PostCoord
 
 
-async def area(a: Tuple[int, int], b: Tuple[int, int]) -> List[dict]:
-    ax, ay = a
-    bx, by = b
+async def area(box: PostArea) -> List[dict]:
+    ax, ay = box.a
+    bx, by = box.b
     values = {'ax': ax, 'ay': ay, 'bx': bx, 'by': by}
     query = r'''
         SELECT * FROM coordinates
@@ -14,8 +15,9 @@ async def area(a: Tuple[int, int], b: Tuple[int, int]) -> List[dict]:
     return database.fetch_all(query=query, values=values)
 
 
-async def coord(x: int, y: int) -> dict:
-    pass
+async def coord(coord: PostCoord) -> dict:
+    await Coordinate.objects.create(**coord.dict())
+    return coord.dict()
 
 
 async def subscribe():
