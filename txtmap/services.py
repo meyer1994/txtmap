@@ -1,7 +1,14 @@
-from typing import Tuple, List
+from typing import List
 
+from broadcaster import Broadcast
+from starlette.websockets import WebSocket
+
+from txtmap.config import config
 from txtmap.db import database, Coordinate
 from txtmap.models import PostArea, PostCoord
+
+
+broadcast = Broadcast(config.DATABASE_URL)
 
 
 async def area(box: PostArea) -> List[dict]:
@@ -20,8 +27,10 @@ async def coord(coord: PostCoord) -> dict:
     return coord.dict()
 
 
-async def subscribe():
-    pass
+async def subscribe(ws: WebSocket):
+    async with broadcast.subscribe(channel='map') as subscriber:
+        async for event in subscriber:
+            await ws.send_text(event.message)
 
 
 async def publish(data: dict):

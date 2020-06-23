@@ -1,5 +1,5 @@
-from unittest.mock import patch, AsyncMock
 from unittest import IsolatedAsyncioTestCase
+from unittest.mock import patch, AsyncMock, MagicMock
 
 from txtmap import services
 from txtmap.models import PostArea, PostCoord
@@ -27,7 +27,7 @@ class TestService(IsolatedAsyncioTestCase):
             self.assertIn(item, result)
 
     @patch('txtmap.services.Coordinate', new_callable=AsyncMock)
-    async def test_coord(self, Coordinate):
+    async def test_coord(self, Coordinate=None):
         """ Returns a single coordinate from db """
         Coordinate.objects.create.return_value = {'x': 1, 'y': 0, 'c': 'x'}
 
@@ -38,8 +38,23 @@ class TestService(IsolatedAsyncioTestCase):
         expected = {'x': 1, 'y': 0, 'c': 'x'}
         self.assertEquals(result, expected)
 
-    async def test_publish(self):
-        pass
+    @patch('txtmap.services.broadcast')
+    async def test_subscribe(self, broadcast):
+        """ Correctly subscribes to broadcaster """
+        event = MagicMock()
+        event.message = 'message'
+        subscriber = MagicMock()
+        subscriber.__aiter__.return_value = [event]
+        context = MagicMock()
+        context.__aenter__.return_value = subscriber
+        broadcast.subscribe.return_value = context
 
-    async def test_subscribe(self):
+        ws = AsyncMock()
+        await services.subscribe(ws)
+
+        broadcast.subscribe.assert_called_once_with(channel='map')
+        subscriber.__aiter__.assert_called_once()
+        ws.send_text.assert_called_once_with('message')
+
+    async def test_publish(self, broadcast):
         pass
